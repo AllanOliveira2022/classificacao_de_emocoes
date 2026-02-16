@@ -11,7 +11,11 @@ class ClassifyScreen extends StatefulWidget {
 class _ClassifyScreenState extends State<ClassifyScreen> {
   final TextEditingController _controller = TextEditingController();
   final BertClassifier _classifier = BertClassifier(maxLength: 128);
-  bool _loading = true;
+
+  bool _modelLoading = true;
+  bool _classifying = false;
+  bool _hasText = false;
+
   String? _errorText;
   String? _result;
 
@@ -19,6 +23,13 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
   void initState() {
     super.initState();
     _loadModel();
+
+    // Detecta se existe texto digitado
+    _controller.addListener(() {
+      setState(() {
+        _hasText = _controller.text.trim().isNotEmpty;
+      });
+    });
   }
 
   Future<void> _loadModel() async {
@@ -27,7 +38,7 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
     } catch (e) {
       setState(() => _errorText = 'Erro ao carregar modelo: $e');
     } finally {
-      setState(() => _loading = false);
+      setState(() => _modelLoading = false);
     }
   }
 
@@ -36,37 +47,40 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
     if (text.isEmpty) return;
 
     setState(() {
-      _loading = true;
+      _classifying = true;
       _errorText = null;
       _result = null;
     });
 
     try {
       final resultData = await _classifier.classify(text);
+
       setState(() {
         _result = resultData['emotion'] as String;
       });
     } catch (e) {
       setState(() => _errorText = 'Erro ao classificar: $e');
     } finally {
-      setState(() => _loading = false);
+      setState(() => _classifying = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Cores da paleta Rosa Claro
-    const Color primaryPink = Color(0xFFF472B6); // Rosa claro vibrante
-    const Color lightPinkBg = Color(0xFFFDF2F8); // Fundo rosa quase branco
-    const Color darkPinkText = Color(0xFF9D174D); // Rosa escuro para textos
+    // 🎨 Paleta Rosa Claro
+    const Color primaryPink = Color(0xFFF472B6);
+    const Color lightPinkBg = Color(0xFFFDF2F8);
+    const Color darkPinkText = Color(0xFF9D174D);
 
     return Scaffold(
-      backgroundColor: Colors.white, // Fundo geral branco
+      backgroundColor: Colors.white,
+
+      // 🔥 APPBAR
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100),
         child: Container(
           decoration: const BoxDecoration(
-            color: lightPinkBg, // Topo em rosa bem clarinho
+            color: lightPinkBg,
             border: Border(
               bottom: BorderSide(color: Color(0xFFFCE7F3), width: 1),
             ),
@@ -89,9 +103,9 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
                       ],
                     ),
                     child: const Icon(
-                      Icons.auto_awesome_rounded, 
-                      color: primaryPink, 
-                      size: 28
+                      Icons.auto_awesome_rounded,
+                      color: primaryPink,
+                      size: 28,
                     ),
                   ),
                   const SizedBox(width: 15),
@@ -124,12 +138,15 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
           ),
         ),
       ),
+
+      // 🔥 BODY
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
+
             const Text(
               'Digite uma mensagem para classificar:',
               style: TextStyle(
@@ -140,7 +157,7 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
             ),
             const SizedBox(height: 12),
 
-            // CAIXA DE TEXTO BRANCA COM RELEVO SUAVE
+            // ✅ CAMPO DE TEXTO
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -157,7 +174,10 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
               child: TextField(
                 controller: _controller,
                 maxLines: 5,
-                style: const TextStyle(fontSize: 16, color: Color(0xFF1E293B)),
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF1E293B),
+                ),
                 decoration: InputDecoration(
                   hintText: 'Como foi o seu dia?',
                   hintStyle: TextStyle(color: Colors.grey.shade400),
@@ -166,15 +186,17 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 25),
 
-            // BOTÃO ROSA CLARO
+            // ✅ BOTÃO DESABILITADO AUTOMATICAMENTE
             SizedBox(
               width: double.infinity,
               height: 58,
               child: ElevatedButton(
-                onPressed: _loading ? null : _classify,
+                onPressed: (_modelLoading || _classifying || !_hasText)
+                    ? null
+                    : _classify,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryPink,
                   foregroundColor: Colors.white,
@@ -183,22 +205,60 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: _loading
+                child: _classifying
                     ? const SizedBox(
                         width: 24,
                         height: 24,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
                       )
                     : const Text(
                         'Classificar Mensagem',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
               ),
             ),
 
             const SizedBox(height: 40),
 
-            // RESULTADO BRANCO COM RELEVO
+            // ✅ TEXTO ENQUANTO CLASSIFICA
+            if (_classifying)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(30),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: primaryPink.withOpacity(0.06),
+                      blurRadius: 30,
+                      offset: const Offset(0, 15),
+                    ),
+                  ],
+                  border: Border.all(color: const Color(0xFFFDF2F8)),
+                ),
+                child: Column(
+                  children: const [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 15),
+                    Text(
+                      "Identificando sentimento, aguarde...",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            // ✅ RESULTADO FINAL
             if (_result != null)
               Container(
                 width: double.infinity,
@@ -218,7 +278,8 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
                         color: lightPinkBg,
                         borderRadius: BorderRadius.circular(20),
@@ -240,13 +301,13 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
                         fontSize: 32,
                         fontWeight: FontWeight.w900,
                         color: darkPinkText,
-                        letterSpacing: -0.5,
                       ),
                     ),
                   ],
                 ),
               ),
 
+            // ❌ ERRO
             if (_errorText != null)
               Padding(
                 padding: const EdgeInsets.only(top: 20),
