@@ -67,258 +67,236 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 🎨 Paleta Rosa Claro
-    const Color primaryPink = Color(0xFFF472B6);
-    const Color lightPinkBg = Color(0xFFFDF2F8);
-    const Color darkPinkText = Color(0xFF9D174D);
-
     return Scaffold(
-      backgroundColor: Colors.white,
-
-      // 🔥 APPBAR
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: lightPinkBg,
-            border: Border(
-              bottom: BorderSide(color: Color(0xFFFCE7F3), width: 1),
-            ),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: primaryPink.withOpacity(0.1),
-                          blurRadius: 10,
-                        )
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.auto_awesome_rounded,
-                      color: primaryPink,
-                      size: 28,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'CLASSIFICADOR DE IA',
-                        style: TextStyle(
-                          color: primaryPink,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      Text(
-                        'Análise de Emoção',
-                        style: TextStyle(
-                          color: darkPinkText,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+      backgroundColor: const Color(0xFF111827),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF0F172A),
+              Color(0xFF1E293B),
+              Color(0xFF111827),
+            ],
           ),
         ),
-      ),
-
-      // 🔥 BODY
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-
-            const Text(
-              'Digite uma mensagem para classificar:',
-              style: TextStyle(
-                color: Color(0xFF64748B),
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // ✅ CAMPO DE TEXTO
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-                border: Border.all(color: const Color(0xFFF1F5F9)),
-              ),
-              child: TextField(
-                controller: _controller,
-                maxLines: 5,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF1E293B),
-                ),
-                decoration: InputDecoration(
-                  hintText: 'Como foi o seu dia?',
-                  hintStyle: TextStyle(color: Colors.grey.shade400),
-                  contentPadding: const EdgeInsets.all(20),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 25),
-
-            // ✅ BOTÃO DESABILITADO AUTOMATICAMENTE
-            SizedBox(
-              width: double.infinity,
-              height: 58,
-              child: ElevatedButton(
-                onPressed: (_modelLoading || _classifying || !_hasText)
-                    ? null
-                    : _classify,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryPink,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: _classifying
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Text(
-                        'Classificar Mensagem',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            // ✅ TEXTO ENQUANTO CLASSIFICA
-            if (_classifying)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(30),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryPink.withOpacity(0.06),
-                      blurRadius: 30,
-                      offset: const Offset(0, 15),
-                    ),
-                  ],
-                  border: Border.all(color: const Color(0xFFFDF2F8)),
-                ),
-                child: Column(
-                  children: const [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 15),
-                    Text(
-                      "Identificando sentimento, aguarde...",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            // ✅ RESULTADO FINAL
-            if (_result != null)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(30),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryPink.withOpacity(0.06),
-                      blurRadius: 30,
-                      offset: const Offset(0, 15),
-                    ),
-                  ],
-                  border: Border.all(color: const Color(0xFFFDF2F8)),
-                ),
-                child: Column(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: lightPinkBg,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text(
-                        'SENTIMENTO IDENTIFICADO',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: primaryPink,
-                          letterSpacing: 1.1,
+                        color: Colors.white.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.15),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      _result!.toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w900,
-                        color: darkPinkText,
+                      child: const Icon(
+                        Icons.auto_awesome_rounded,
+                        color: Colors.lightBlueAccent,
+                        size: 28,
                       ),
+                    ),
+                    const SizedBox(width: 15),
+
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        Text(
+                          "CLASSIFICADOR",
+                          style: TextStyle(
+                            color: Colors.white60,
+                            fontSize: 11,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+
+                        Text(
+                          "Análise de Emoção",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
 
-            // ❌ ERRO
-            if (_errorText != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Center(
-                  child: Text(
-                    _errorText!,
-                    style: const TextStyle(color: Colors.redAccent),
+                const SizedBox(height: 40),
+
+                /// TEXTO
+                const Text(
+                  "Digite sua mensagem",
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
                   ),
                 ),
-              ),
-          ],
+
+                const SizedBox(height: 15),
+
+                // INPUT
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.1),
+                    ),
+                  ),
+                  child: TextField(
+                    controller: _controller,
+                    maxLines: 5,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                    decoration: const InputDecoration(
+                      hintText: "Ex: Estou muito feliz hoje!",
+                      hintStyle: TextStyle(
+                        color: Colors.white38,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(20),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                // BOTÃO
+                GestureDetector(
+                  onTap: (_modelLoading || _classifying || !_hasText)
+                      ? null
+                      : _classify,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: (_modelLoading || _classifying || !_hasText)
+                            ? [
+                                Colors.grey.shade800,
+                                Colors.grey.shade900,
+                              ]
+                            : [
+                                const Color(0xFF334155),
+                                const Color(0xFF1E293B),
+                              ],
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.15),
+                      ),
+                    ),
+                    child: Center(
+                      child: _classifying
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Text(
+                              "Classificar Emoção",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 40),
+
+                // LOADING
+                if (_classifying)
+                  Center(
+                    child: Column(
+                      children: const [
+
+                        CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+
+                        SizedBox(height: 15),
+
+                        Text(
+                          "Analisando emoção...",
+                          style: TextStyle(
+                            color: Colors.white60,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                // RESULTADO
+                if (_result != null)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(30),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.15),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+
+                        const Text(
+                          "EMOÇÃO IDENTIFICADA",
+                          style: TextStyle(
+                            color: Colors.white60,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+
+                        const SizedBox(height: 15),
+
+                        Text(
+                          _result!,
+                          style: const TextStyle(
+                            fontSize: 34,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.greenAccent,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                /// ERRO
+                if (_errorText != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text(
+                      _errorText!,
+                      style: const TextStyle(
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );

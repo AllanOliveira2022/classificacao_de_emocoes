@@ -46,11 +46,12 @@ class _HomeScreenState extends State<HomeScreen>
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFFAFAFA),
-              Color(0xFFF5F5F5),
+              Color(0xFF0F172A),
+              Color(0xFF1E293B),
+              Color(0xFF111827),
             ],
           ),
         ),
@@ -65,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen>
                 height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFFD946EF).withOpacity(0.08),
+                  color: Colors.white.withOpacity(0.04),
                 ),
               ),
             ),
@@ -115,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 style: const TextStyle(
                                   fontSize: 32,
                                   fontWeight: FontWeight.w800,
-                                  color: Color(0xFF1A1A1A),
+                                  color: Colors.white,
                                   height: 1.3,
                                 ),
                                 children: [
@@ -125,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   TextSpan(
                                     text: 'importa',
                                     style: const TextStyle(
-                                      color: Color(0xFFD946EF),
+                                      color: Colors.greenAccent,
                                       fontWeight: FontWeight.w800,
                                     ),
                                   ),
@@ -138,11 +139,11 @@ class _HomeScreenState extends State<HomeScreen>
                             const SizedBox(height: 28),
                             // Subtítulo
                             Text(
-                              'SmartText IA analisa e identifica\nautomaticamente mensagens importantes\ne desnecessárias.',
+                              'EmotionAI analisa e identifica automaticamente\na emoção presente nas suas mensagens',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey[700],
+                                color: Colors.white60,
                                 height: 1.7,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -182,28 +183,25 @@ class _HomeScreenState extends State<HomeScreen>
                               padding: const EdgeInsets.symmetric(vertical: 18),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
                                   colors: _isButtonPressed
                                       ? [
-                                          const Color(0xFFD946EF)
-                                              .withOpacity(0.9),
-                                          const Color(0xFFEC4899)
-                                              .withOpacity(0.9),
+                                          Color(0xFF1E293B),
+                                          Color(0xFF0F172A),
                                         ]
                                       : [
-                                          const Color(0xFFD946EF),
-                                          const Color(0xFFEC4899),
+                                          Color(0xFF334155),
+                                          Color(0xFF1E293B),
                                         ],
                                 ),
                                 borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.15),
+                                ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFD946EF)
-                                        .withOpacity(_isButtonPressed ? 0.5 : 0.3),
-                                    blurRadius:
-                                        _isButtonPressed ? 16 : 12,
-                                    offset: Offset(0, _isButtonPressed ? 6 : 4),
+                                    color: Colors.black.withOpacity(0.4),
+                                    blurRadius: 15,
+                                    offset: Offset(0, 6),
                                   ),
                                 ],
                               ),
