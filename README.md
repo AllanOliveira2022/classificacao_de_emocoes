@@ -32,5 +32,3 @@ Quando o usuário digita ou cola uma mensagem no aplicativo, ocorre o seguinte p
 - O modelo retorna as probabilidades para cada emoção
 
 - O aplicativo exibe a emoção com maior probabilidade com resultado
-
-## 🏗️ Arquitetura
